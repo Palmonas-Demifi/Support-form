@@ -29,6 +29,8 @@ const handleSubmit = async (e) => {
   setLoading(true);
 
   try {
+     
+
     const payload = new FormData();
     for (const key in formData) {
       if (formData[key] !== null) {
@@ -74,28 +76,27 @@ const handleSubmit = async (e) => {
       <header className="header">
         <img src="/logo.webp" alt="Palmonas Logo" className="logo" />
         <nav className="nav">
-          <a href="/">Home</a>
-          
-          <button className="ticket-btn">Submit a ticket</button>
+          <a href="https://www.palmonas.com">Home</a>
+
+          <button className="ticket-btn">Support</button>
         </nav>
       </header>
-
-      {/* Banner */}
-      <section className="banner">
-        <h1>Submit a Ticket</h1>
-      </section>
+      <div className="main-content">
+        {/* Banner */}
+        <section className="banner">
+          <h1>Submit a Ticket</h1>
+        </section>
 
       {/* Form */}
       <main className="form-container">
         <form onSubmit={handleSubmit} className="ticket-form">
-          <label>Email ID *</label>
+          <label>Registered Email ID *</label>
           <input type="email" name="email" required onChange={handleChange} />
 
-          <label>Contact Number *</label>
+          <label>Registered Contact Number *</label>
           <input type="tel" name="phone" required onChange={handleChange} />
 
-          <label>Order Reference</label>
-          <input type="text" name="orderRef" onChange={handleChange} />
+         
 
           <label>First Name</label>
           <input type="text" name="firstName" onChange={handleChange} />
@@ -127,6 +128,9 @@ const handleSubmit = async (e) => {
             onChange={handleChange}
           ></textarea>
 
+        <label>Order Reference {formData.issueType !== "Brand Alliance (Collaboration, PR, Jobs)" && "*"}</label>
+          <input type="text" name="orderRef" required={formData.issueType !== "Brand Alliance (Collaboration, PR, Jobs)"} onChange={handleChange} />
+
           <label>Preferred Contact Method</label>
           <select name="contactMethod" onChange={handleChange}>
             <option value="">Choose...</option>
@@ -143,6 +147,8 @@ const handleSubmit = async (e) => {
 
         </form>
       </main>
+    </div>
+      
     </div>
   );
 }
