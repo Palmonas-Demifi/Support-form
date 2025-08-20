@@ -1,0 +1,106 @@
+/* ---------- Reset & tokens ---------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+:root { --max: 1200px; }
+
+/* ---------- Page ---------- */
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f7f7f7;
+  color: #000;
+}
+
+.page { min-height: 100vh; display: flex; flex-direction: column; }
+
+/* ---------- Header ---------- */
+.header { background: #fff; border-bottom: 1px solid #e6e6e6; width: 100%; }
+.inner {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 14px 20px;
+}
+.header .inner { display: flex; align-items: center; justify-content: space-between; }
+
+.logo { height: 34px; object-fit: contain; }
+
+.nav { display: flex; align-items: center; gap: 18px; }
+.nav a { color: #000; text-decoration: none; font-weight: 500; }
+.ticket-btn {
+  background: #000; color: #fff; border: 0; padding: 8px 14px; border-radius: 6px;
+  cursor: pointer;
+}
+.ticket-btn:hover { background: #333; }
+
+/* ---------- Banner ---------- */
+.banner { background: #000; color: #fff; width: 100%; }
+.banner .inner { padding: 40px 20px; }
+.banner h1 { margin: 0; font-size: 32px; }
+
+/* ---------- Form section ---------- */
+.form-section { flex: 1; width: 100%; }
+.form-section .inner { padding: 32px 20px; }
+
+/* Card-like form that expands on desktop */
+.ticket-form {
+  width: 100%;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+  padding: 28px;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 columns on desktop */
+  gap: 18px 28px;
+}
+
+/* Fields */
+.field { display: flex; flex-direction: column; }
+.field.full { grid-column: 1 / -1; } /* span both columns */
+
+label { font-weight: 600; margin-bottom: 6px; }
+
+input, select, textarea {
+  padding: 12px;
+  border: 1px solid #cfcfcf;
+  border-radius: 8px;
+  font-size: 15px;
+  background: #fff;
+  color: #000;
+}
+
+textarea { resize: vertical; min-height: 120px; }
+
+.actions { display: flex; justify-content: flex-end; }
+.submit-btn {
+  background: #000; color: #fff; border: 0; border-radius: 8px;
+  padding: 14px 18px; font-size: 16px; cursor: pointer;
+  width: 100%;
+}
+.submit-btn:hover { background: #333; }
+
+/* ---------- Responsive ---------- */
+/* Tablet and below: keep centered, reduce padding */
+@media (max-width: 1024px) {
+  .banner .inner { padding: 32px 20px; }
+  .ticket-form { padding: 22px; }
+}
+
+/* Mobile: single column & center aligned */
+@media (max-width: 768px) {
+  .header .inner { padding: 12px 16px; }
+  .nav { gap: 12px; }
+  .banner h1 { font-size: 24px; }
+  .ticket-form {
+    grid-template-columns: 1fr;  /* 1 column */
+    max-width: 600px;
+    margin: 0 auto;              /* center card on mobile */
+  }
+  .submit-btn { width: 100%; }
+}
+
+/* Ultra-wide: let the form breathe but remain centered */
+@media (min-width: 1400px) {
+  .ticket-form { max-width: 1100px; margin: 0 auto; }
+}
