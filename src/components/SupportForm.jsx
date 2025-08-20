@@ -19,10 +19,33 @@ export default function SupportApp() {
     setFormData((p) => ({ ...p, [name]: files ? files[0] : value }));
   };
 
-  const handleSubmit = (e) => {
+ 
+
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Your ticket has been submitted!");
-    // send to GAS with FormData if desired
+    setLoading(true);
+
+    const formData = new FormData(e.target);
+
+    try {
+      const response = await fetch(import.meta.env.VITE_GAS_WEB_APP_URL, {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+      if (result.ok) {
+        alert("Support request submitted successfully!");
+        e.target.reset();
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      alert("Error submitting form: " + error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
