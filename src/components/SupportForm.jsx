@@ -25,7 +25,9 @@ const [loading, setLoading] = useState(false);
   };
 
 const handleSubmit = async (e) => {
+
     e.preventDefault();
+     alert("Your form is being submitted. Please don't press the back button.");
     setLoading(true);
 
     try {
