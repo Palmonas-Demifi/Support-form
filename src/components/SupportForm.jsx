@@ -5,13 +5,12 @@ function SupportApp() {
   const [formData, setFormData] = useState({
     orderRef: "",
     firstName: "",
-    lastName: "",
+    
     email: "",
     phone: "",
     issueType: "",
     problem: "",
-    contactMethod: "",
-    attachment: null,
+    contactMethod: ""
   });
 const [loading, setLoading] = useState(false);
 
@@ -27,7 +26,7 @@ const [loading, setLoading] = useState(false);
 const handleSubmit = async (e) => {
 
     e.preventDefault();
-     alert("Your form is being submitted. Please don't press the back button.");
+    //  alert("Your form is being submitted. Please don't press the back button.");
     setLoading(true);
 
     try {
@@ -43,6 +42,9 @@ const handleSubmit = async (e) => {
       const response = await fetch(import.meta.env.VITE_GAS_WEB_APP_URL, {
         method: "POST",
         body: payload,
+        headers: {
+          "Accept": "application/json",
+        },
       });
 
       // Handle Apps Script response safely
@@ -59,13 +61,11 @@ const handleSubmit = async (e) => {
         setFormData({
           orderRef: "",
           firstName: "",
-          lastName: "",
           email: "",
           phone: "",
           issueType: "",
           problem: "",
-          contactMethod: "",
-          attachment: null,
+          contactMethod: ""
         });
       } else {
         alert("Something went wrong. Please try again.");
@@ -77,14 +77,6 @@ const handleSubmit = async (e) => {
     }
   };
 
-// Utility: Convert file → base64
-const toBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (err) => reject(err);
-  });
 
 
   return (
@@ -110,11 +102,10 @@ const toBase64 = (file) =>
 
          
 
-          <label>First Name</label>
+          <label>Full Name</label>
           <input type="text" name="firstName" onChange={handleChange} />
 
-          <label>Last Name</label>
-          <input type="text" name="lastName" onChange={handleChange} />
+          
 
           <label>Issue Type *</label>
           <select name="issueType" required onChange={handleChange}>
@@ -150,8 +141,6 @@ const toBase64 = (file) =>
             <option>Phone</option>
           </select>
 
-          <label>Upload File (optional)</label>
-          <input type="file" name="attachment" onChange={handleChange} />
 
           <button type="submit" className="submit-btn" disabled={loading}>
   {loading ? "Submitting..." : "Submit Ticket"}
