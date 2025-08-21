@@ -25,49 +25,64 @@ const [loading, setLoading] = useState(false);
   };
 
 const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
+    e.preventDefault();
+    setLoading(true);
 
-  try {
-     
-
-    const payload = new FormData();
-    for (const key in formData) {
-      if (formData[key] !== null) {
-        payload.append(key, formData[key]);
+    try {
+      // Prepare FormData
+      const payload = new FormData();
+      for (const key in formData) {
+        if (formData[key] !== null && formData[key] !== "") {
+          payload.append(key, formData[key]);
+        }
       }
-    }
 
-    const response = await fetch(import.meta.env.VITE_GAS_WEB_APP_URL, {
-      method: "POST",
-      body: payload,
-    });
-
-    const result = await response.json();
-
-    if (result.ok || result.message) {  // Apps Script might return {message: "..."}
-      alert("Support request submitted successfully!");
-      e.target.reset();
-      setFormData({
-        orderRef: "",
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        issueType: "",
-        problem: "",
-        contactMethod: "",
-        attachment: null,
+      // Send to Apps Script
+      const response = await fetch(import.meta.env.VITE_GAS_WEB_APP_URL, {
+        method: "POST",
+        body: payload,
       });
-    } else {
-      alert("Something went wrong. Please try again.");
+
+      // Handle Apps Script response safely
+      let result;
+      try {
+        result = await response.json();
+      } catch {
+        result = { message: await response.text() };
+      }
+
+      if (result.ok || result.message) {
+        alert("Support request submitted successfully!");
+        e.target.reset();
+        setFormData({
+          orderRef: "",
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          issueType: "",
+          problem: "",
+          contactMethod: "",
+          attachment: null,
+        });
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      alert("Error submitting form: " + error.message);
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    alert("Error submitting form: " + error.message);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
+
+// Utility: Convert file → base64
+const toBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (err) => reject(err);
+  });
 
 
   return (
@@ -149,3 +164,5 @@ const handleSubmit = async (e) => {
 }
 
 export default SupportApp;
+
+
