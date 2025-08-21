@@ -75,11 +75,6 @@ const handleSubmit = async (e) => {
       {/* Header */}
       <header className="header">
         <img src="/logo.webp" alt="Palmonas Logo" className="logo" />
-        <nav className="nav">
-          <a href="https://www.palmonas.com">Home</a>
-
-          <button className="ticket-btn">Support</button>
-        </nav>
       </header>
       <div className="main-content">
         {/* Banner */}

@@ -1,1 +1,182 @@
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; } /* Body */ body { background: #f5f5f5; color: #000; } /* Page wrapper */ .page { padding-top: 80px; /* space for fixed header */ } /* Header */ .header { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: #fff; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); } .logo { height: 40px; } /* Navigation */ .nav { display: flex; align-items: center; gap: 1.5rem; } .nav a { text-decoration: none; color: #000; font-weight: 500; transition: color 0.2s; } .nav a:hover { color: #555; } /* Ticket button */ .ticket-btn { padding: 0.5rem 0.9rem; background: #000; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; transition: background 0.3s; } .ticket-btn:hover { background: #333; } /* Banner section */ .banner { text-align: center; padding: 3rem 1rem 2rem; background-color: black; } .banner h1 { font-size: 2rem; font-weight: 600; color:white; } /* Form container */ /* .form-container { display: flex; justify-content: center; align-items: flex-start; padding: 2rem 1rem; width: 100%; box-sizing: border-box; } */ /* Form container: full width always, flex for centering */ .form-container { display: flex; justify-content: center; padding: 2rem 1rem; width: 100%; box-sizing: border-box; } /* Form card */ .ticket-form { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); padding: 2rem; border-radius: 12px; width: 100%; /* full width on small screens */ max-width: 800px; /* limit width on large screens */ box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; gap: 1rem; box-sizing: border-box; } /* Labels and inputs */ .ticket-form label { font-weight: 500; } .ticket-form input, .ticket-form select, .ticket-form textarea { width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; } .ticket-form textarea { resize: vertical; } /* Submit button */ .ticket-form .submit-btn { padding: 0.75rem; background: #000; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; transition: background 0.3s; } .ticket-form .submit-btn:hover { background: #333; } /* Desktop: add spacing between fields in rows */ @media (min-width: 768px) { .ticket-form { padding: 2rem; gap: 1.5rem; } /* Optional: two-column layout for first/last name and email/phone */ .ticket-form .row { display: flex; gap: 1rem; } .ticket-form .row > * { flex: 1; } .form-container { display: flex; justify-content: center; align-items: flex-start; padding: 2rem 1rem; width: 1200px; box-sizing: border-box; } } /* Mobile adjustments */ @media (max-width: 767px) { .header { padding: 0.75rem 1rem; } .nav { gap: 1rem; } .ticket-btn { padding: 0.4rem 0.7rem; } .logo { height: 35px; } .banner h1 { font-size: 1.5rem; } .ticket-form { padding: 1.5rem; border-radius: 8px; } .form-container { display: flex; justify-content: center; align-items: flex-start; padding: 2rem 1rem; width: 100%; box-sizing: border-box; } }
+/* Reset default styles */
+* {
+    width: 100%;
+    max-width: 1600px;;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* Body */
+body {
+  background: #f5f5f5;
+  color: #000;
+}
+
+/* Page wrapper */
+.page {
+  padding-top: 80px; /* space for fixed header */
+  width: 100%;
+}
+
+/* Header */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background: #fff;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+height: 70px;
+        width: 200px;
+  
+}
+
+
+/* Ticket button */
+.ticket-btn {
+  padding: 0.5rem 0.9rem;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.ticket-btn:hover {
+  background: #333;
+}
+
+/* Banner section */
+.banner {
+  text-align: center;
+  padding: 3rem 1rem 2rem;
+  background-color: black;
+}
+
+.banner h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: white;
+}
+
+/* Form container: centers form horizontally */
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+}
+
+/* Form card */
+.ticket-form {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  padding: 2rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 800px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-sizing: border-box;
+}
+
+/* Labels and inputs */
+.ticket-form label {
+  font-weight: 500;
+}
+
+.ticket-form input,
+.ticket-form select,
+.ticket-form textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.ticket-form textarea {
+  resize: vertical;
+}
+
+/* Submit button */
+.ticket-form .submit-btn {
+  padding: 0.75rem;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.ticket-form .submit-btn:hover {
+  background: #333;
+}
+
+/* Desktop adjustments */
+@media (min-width: 768px) {
+  .ticket-form {
+    gap: 1.5rem;
+  }
+
+  /* Optional: two-column layout for first/last name or email/phone */
+  .ticket-form .row {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .ticket-form .row > * {
+    flex: 1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .form-container {
+    align-items: center; /* vertically center form on large screens */
+    min-height: calc(100vh - 80px);
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 767px) {
+  .header {
+    padding: 0.75rem 1rem;
+  }
+
+  
+  .ticket-btn {
+    padding: 0.4rem 0.7rem;
+  }
+
+  .logo {
+    height: 50px;
+    width: 150px;
+  }
+
+  .banner h1 {
+    font-size: 1.5rem;
+  }
+
+  .ticket-form {
+    padding: 1.5rem;
+    border-radius: 8px;
+  }
+}
