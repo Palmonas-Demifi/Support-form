@@ -140,8 +140,8 @@ const toBase64 = (file) =>
             onChange={handleChange}
           ></textarea>
 
-        <label>Order Reference {formData.issueType !== "Brand Alliance (Collaboration, PR, Jobs)" && "*"}</label>
-          <input type="text" name="orderRef" required={formData.issueType !== "Brand Alliance (Collaboration, PR, Jobs)"} onChange={handleChange} />
+        <label>Order ID {formData.issueType !== "Brand Alliance (Collaboration, PR, Jobs)" && "*"}</label>
+          <input type="text" placeholder="#PM...." name="orderRef" required={formData.issueType !== "Brand Alliance (Collaboration, PR, Jobs)"} onChange={handleChange} />
 
           <label>Preferred Contact Method</label>
           <select name="contactMethod" onChange={handleChange}>
