@@ -149,7 +149,14 @@ const handleSubmit = async (e) => {
         </form>
       </main>
     </div>
-      
+      {/* Loader Modal */}
+      {loading && (
+        <div className="loader-modal">
+          <div className="loader"></div>
+          <p className="loader-text">Submitting your request. </p>
+          <p className="loader-text">Please don't press back button.</p>
+        </div>
+      )}
     </div>
   );
 }
