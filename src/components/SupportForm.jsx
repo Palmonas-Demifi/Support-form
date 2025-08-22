@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "./supportform.css";
 
 function SupportApp() {
@@ -16,6 +16,10 @@ function SupportApp() {
   const [loading, setLoading] = useState(false);
   const [phoneError, setPhoneError] = useState("");
   const [orderIdError, setOrderIdError] = useState("");
+
+  // 🔑 Refs for scrolling to error fields
+  const phoneRef = useRef(null);
+  const orderIdRef = useRef(null);
 
   // Sub-reason mapping
   const subReasons = {
@@ -66,26 +70,30 @@ function SupportApp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let valid = true;
-
     // ✅ Phone validation
     if (formData.phone.length !== 10) {
       setPhoneError("Phone number must be exactly 10 digits.");
-      valid = false;
+      setOrderIdError("");
+      phoneRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      phoneRef.current.focus();
+      return;
     } else {
       setPhoneError("");
     }
 
     // ✅ Order ID validation
-    const orderSuffix = formData.orderRef.replace("#PM1570", "");
-    if (!formData.orderRef.startsWith("#PM1570") || orderSuffix.length !== 6) {
-      setOrderIdError("Enter the last 6 digits of your order ID");
-      valid = false;
+    if (
+      !formData.orderRef.startsWith("#PM1570") ||
+      formData.orderRef.length !== 13
+    ) {
+      setOrderIdError("Order ID must start with #PM1570 and end with 6 digits.");
+      setPhoneError("");
+      orderIdRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      orderIdRef.current.focus();
+      return;
     } else {
       setOrderIdError("");
     }
-
-    if (!valid) return; // stop submission if errors
 
     setLoading(true);
 
@@ -111,7 +119,7 @@ function SupportApp() {
       }
 
       if (result.ok || result.message) {
-        alert("Support request submitted successfully!");
+        alert("✅ Support request submitted successfully!");
         e.target.reset();
         setFormData({
           orderRef: "#PM1570",
@@ -124,10 +132,10 @@ function SupportApp() {
           contactMethod: ""
         });
       } else {
-        alert("Something went wrong. Please try again.");
+        alert("❌ Something went wrong. Please try again.");
       }
     } catch (error) {
-      alert("Error submitting form: " + error.message);
+      alert("❌ Error submitting form: " + error.message);
     } finally {
       setLoading(false);
     }
@@ -161,6 +169,8 @@ function SupportApp() {
               placeholder="Enter 10-digit number"
               value={formData.phone}
               onChange={handleChange}
+              ref={phoneRef}
+              className={phoneError ? "error-input" : ""}
             />
             {phoneError && <p className="error-text">{phoneError}</p>}
 
@@ -227,6 +237,8 @@ function SupportApp() {
                 required={formData.issueType !== "Brand Alliance (Collaboration, PR, Jobs)"}
                 value={formData.orderRef.replace("#PM1570", "")}
                 onChange={handleOrderIdChange}
+                ref={orderIdRef}
+                className={orderIdError ? "error-input" : ""}
               />
             </div>
             {orderIdError && <p className="error-text">{orderIdError}</p>}
