@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./supportform.css";
 
 function SupportApp() {
+  // throw new Error("Test Sentry Error from SupportForm.jsx");
   const [formData, setFormData] = useState({
     orderRef: "",
     firstName: "",
