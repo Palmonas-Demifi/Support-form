@@ -3,7 +3,7 @@ import "./supportform.css";
 
 function SupportApp() {
   const [formData, setFormData] = useState({
-    orderRef: "",
+    orderRef: "#PM1570", // ✅ prefix prefilled
     firstName: "",
     email: "",
     phone: "",
@@ -14,6 +14,8 @@ function SupportApp() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [phoneError, setPhoneError] = useState("");
+  const [orderIdError, setOrderIdError] = useState("");
 
   // Sub-reason mapping
   const subReasons = {
@@ -36,6 +38,12 @@ function SupportApp() {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
+    if (name === "phone") {
+      const digitsOnly = value.replace(/\D/g, "");
+      setFormData({ ...formData, phone: digitsOnly });
+      return;
+    }
+
     if (name === "issueType") {
       setFormData((prev) => ({
         ...prev,
@@ -49,8 +57,36 @@ function SupportApp() {
     }
   };
 
+  const handleOrderIdChange = (e) => {
+    const digitsOnly = e.target.value.replace(/\D/g, ""); // only numbers
+    const fullOrderId = "#PM1570" + digitsOnly;
+    setFormData({ ...formData, orderRef: fullOrderId });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    let valid = true;
+
+    // ✅ Phone validation
+    if (formData.phone.length !== 10) {
+      setPhoneError("Phone number must be exactly 10 digits.");
+      valid = false;
+    } else {
+      setPhoneError("");
+    }
+
+    // ✅ Order ID validation
+    const orderSuffix = formData.orderRef.replace("#PM1570", "");
+    if (!formData.orderRef.startsWith("#PM1570") || orderSuffix.length !== 6) {
+      setOrderIdError("Enter the last 6 digits of your order ID");
+      valid = false;
+    } else {
+      setOrderIdError("");
+    }
+
+    if (!valid) return; // stop submission if errors
+
     setLoading(true);
 
     try {
@@ -78,7 +114,7 @@ function SupportApp() {
         alert("Support request submitted successfully!");
         e.target.reset();
         setFormData({
-          orderRef: "",
+          orderRef: "#PM1570",
           firstName: "",
           email: "",
           phone: "",
@@ -117,7 +153,16 @@ function SupportApp() {
             <input type="email" name="email" required onChange={handleChange} />
 
             <label>Registered Contact Number *</label>
-            <input type="tel" name="phone" required onChange={handleChange} />
+            <input
+              type="tel"
+              name="phone"
+              required
+              maxLength="10"
+              placeholder="Enter 10-digit number"
+              value={formData.phone}
+              onChange={handleChange}
+            />
+            {phoneError && <p className="error-text">{phoneError}</p>}
 
             <label>Full Name</label>
             <input type="text" name="firstName" onChange={handleChange} />
@@ -170,19 +215,21 @@ function SupportApp() {
 
             <label>
               Order ID{" "}
-              {formData.issueType !==
-                "Brand Alliance (Collaboration, PR, Jobs)" && "*"}
+              {formData.issueType !== "Brand Alliance (Collaboration, PR, Jobs)" && "*"}
             </label>
-            <input
-              type="text"
-              placeholder="#PM...."
-              name="orderRef"
-              required={
-                formData.issueType !==
-                "Brand Alliance (Collaboration, PR, Jobs)"
-              }
-              onChange={handleChange}
-            />
+            <div className="order-id-field">
+              <span className="prefix">#PM1570</span>
+              <input
+                type="text"
+                name="orderRef"
+                placeholder="Enter last 6 digits"
+                maxLength="6"
+                required={formData.issueType !== "Brand Alliance (Collaboration, PR, Jobs)"}
+                value={formData.orderRef.replace("#PM1570", "")}
+                onChange={handleOrderIdChange}
+              />
+            </div>
+            {orderIdError && <p className="error-text">{orderIdError}</p>}
 
             <label>Preferred Contact Method</label>
             <select name="contactMethod" onChange={handleChange}>
