@@ -2,36 +2,58 @@ import React, { useState } from "react";
 import "./supportform.css";
 
 function SupportApp() {
-  // throw new Error("Test Sentry Error from SupportForm.jsx");
   const [formData, setFormData] = useState({
     orderRef: "",
     firstName: "",
-    
     email: "",
     phone: "",
     issueType: "",
+    subReason: "",
     problem: "",
     contactMethod: ""
   });
-const [loading, setLoading] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+
+  // Sub-reason mapping
+  const subReasons = {
+    Return: [
+      "Damaged Item",
+      "Wrong Item",
+      "Missing Item",
+      "Size Issue",
+      "Did not meet expectations",
+    ],
+    Exchange: [
+      "Damaged Item",
+      "Wrong Item",
+      "Missing Item",
+      "Size Issue",
+      "Did not meet expectations",
+    ],
+  };
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (files) {
+
+    if (name === "issueType") {
+      setFormData((prev) => ({
+        ...prev,
+        issueType: value,
+        subReason: "" // reset subReason when issueType changes
+      }));
+    } else if (files) {
       setFormData({ ...formData, [name]: files[0] });
     } else {
       setFormData({ ...formData, [name]: value });
     }
   };
 
-const handleSubmit = async (e) => {
-
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    //  alert("Your form is being submitted. Please don't press the back button.");
     setLoading(true);
 
     try {
-      // Prepare FormData
       const payload = new FormData();
       for (const key in formData) {
         if (formData[key] !== null && formData[key] !== "") {
@@ -39,16 +61,12 @@ const handleSubmit = async (e) => {
         }
       }
 
-      // Send to Apps Script
       const response = await fetch(import.meta.env.VITE_GAS_WEB_APP_URL, {
         method: "POST",
         body: payload,
-        headers: {
-          "Accept": "application/json",
-        },
+        headers: { Accept: "application/json" },
       });
 
-      // Handle Apps Script response safely
       let result;
       try {
         result = await response.json();
@@ -65,6 +83,7 @@ const handleSubmit = async (e) => {
           email: "",
           phone: "",
           issueType: "",
+          subReason: "",
           problem: "",
           contactMethod: ""
         });
@@ -78,78 +97,107 @@ const handleSubmit = async (e) => {
     }
   };
 
-
-
   return (
     <div className="page">
       {/* Header */}
       <header className="header">
         <img src="/logo.webp" alt="Palmonas Logo" className="logo" />
       </header>
+
       <div className="main-content">
         {/* Banner */}
         <section className="banner">
           <h1>Submit a Ticket</h1>
         </section>
 
-      {/* Form */}
-      <main className="form-container">
-        <form onSubmit={handleSubmit} className="ticket-form">
-          <label>Registered Email ID *</label>
-          <input type="email" name="email" required onChange={handleChange} />
+        {/* Form */}
+        <main className="form-container">
+          <form onSubmit={handleSubmit} className="ticket-form">
+            <label>Registered Email ID *</label>
+            <input type="email" name="email" required onChange={handleChange} />
 
-          <label>Registered Contact Number *</label>
-          <input type="tel" name="phone" required onChange={handleChange} />
+            <label>Registered Contact Number *</label>
+            <input type="tel" name="phone" required onChange={handleChange} />
 
-         
+            <label>Full Name</label>
+            <input type="text" name="firstName" onChange={handleChange} />
 
-          <label>Full Name</label>
-          <input type="text" name="firstName" onChange={handleChange} />
+            <label>Issue Type *</label>
+            <select
+              name="issueType"
+              required
+              value={formData.issueType}
+              onChange={handleChange}
+            >
+              <option value="">Choose...</option>
+              <option>Order Status</option>
+              <option>Cancellation</option>
+              <option>Return</option>
+              <option>Exchange</option>
+              <option>Refund Status</option>
+              <option>Warranty Claim</option>
+              <option>Update Address/Contact</option>
+              <option>Brand Alliance (Collaboration, PR, Jobs)</option>
+            </select>
 
-          
+            {/* Dynamic Sub Reason */}
+            {subReasons[formData.issueType] && (
+              <>
+                <label>Sub Reason *</label>
+                <select
+                  name="subReason"
+                  required
+                  value={formData.subReason}
+                  onChange={handleChange}
+                >
+                  <option value="">Choose...</option>
+                  {subReasons[formData.issueType].map((reason) => (
+                    <option key={reason} value={reason}>
+                      {reason}
+                    </option>
+                  ))}
+                </select>
+              </>
+            )}
 
-          <label>Issue Type *</label>
-          <select name="issueType" required onChange={handleChange}>
-            <option value="">Choose...</option>
-            <option>Order Status</option>
-            <option>Cancellation</option>
-            <option>Return</option>
-            <option>Exchange</option>
-            <option>Refund Status</option>
-            <option>Warranty Claim</option>
-            <option>Missing Item</option>
-            <option>Damaged Item</option>
-            <option>Wrong Item</option>
-            <option>Update Address/Contact</option>
-            <option>Brand Alliance (Collaboration, PR, Jobs)</option>
-          </select>
+            <label>Description *</label>
+            <textarea
+              name="problem"
+              rows="5"
+              required
+              onChange={handleChange}
+            ></textarea>
 
-          <label>Description *</label>
-          <textarea
-            name="problem"
-            rows="5"
-            required
-            onChange={handleChange}
-          ></textarea>
+            <label>
+              Order ID{" "}
+              {formData.issueType !==
+                "Brand Alliance (Collaboration, PR, Jobs)" && "*"}
+            </label>
+            <input
+              type="text"
+              placeholder="#PM...."
+              name="orderRef"
+              required={
+                formData.issueType !==
+                "Brand Alliance (Collaboration, PR, Jobs)"
+              }
+              onChange={handleChange}
+            />
 
-        <label>Order ID {formData.issueType !== "Brand Alliance (Collaboration, PR, Jobs)" && "*"}</label>
-          <input type="text" placeholder="#PM...." name="orderRef" required={formData.issueType !== "Brand Alliance (Collaboration, PR, Jobs)"} onChange={handleChange} />
+            <label>Preferred Contact Method</label>
+            <select name="contactMethod" onChange={handleChange}>
+              <option value="">Choose...</option>
+              <option>Email</option>
+              <option>Phone</option>
+            </select>
 
-          <label>Preferred Contact Method</label>
-          <select name="contactMethod" onChange={handleChange}>
-            <option value="">Choose...</option>
-            <option>Email</option>
-            <option>Phone</option>
-          </select>
+            <button type="submit" className="submit-btn" disabled={loading}>
+              {loading ? "Submitting..." : "Submit Ticket"}
+            </button>
+          </form>
+        </main>
+      </div>
 
-
-          <button type="submit" className="submit-btn" disabled={loading}>
-  {loading ? "Submitting..." : "Submit Ticket"}
-</button>
-
-        </form>
-      </main>
-    </div>
       {/* Loader Modal */}
       {loading && (
         <div className="loader-modal">
@@ -163,5 +211,3 @@ const handleSubmit = async (e) => {
 }
 
 export default SupportApp;
-
-
