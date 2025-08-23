@@ -11,7 +11,7 @@ function SupportApp() {
     subReason: "",
     problem: "",
     contactMethod: "",
-    media: null, // ✅ file attachment
+    media: [], // ✅ multiple files
   });
 
   const [loading, setLoading] = useState(false);
@@ -53,7 +53,7 @@ function SupportApp() {
         subReason: "", // reset subReason when issueType changes
       }));
     } else if (files) {
-      setFormData({ ...formData, [name]: files[0] }); // ✅ handle file input
+      setFormData({ ...formData, [name]: Array.from(files) }); // ✅ multiple files
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -94,8 +94,11 @@ function SupportApp() {
       payload.append("description", formData.problem);
       payload.append("order_id", formData.orderRef);
       payload.append("preferred_contact_method", formData.contactMethod);
-      if (formData.media) {
-        payload.append("media", formData.media);
+
+      if (formData.media.length > 0) {
+        formData.media.forEach((file) => {
+          payload.append("media", file); // ✅ append multiple
+        });
       }
 
       const response = await fetch(
@@ -129,18 +132,12 @@ function SupportApp() {
           subReason: "",
           problem: "",
           contactMethod: "",
-          media: null,
+          media: [],
         });
       } else {
         setFormError("❌ Error: " + (result.message || JSON.stringify(result)));
       }
-    } 
-    
-    // catch (error) {
-    //   setFormError("❌ Error submitting form: " + error.message);
-    // } 
-    
-    finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -272,8 +269,32 @@ function SupportApp() {
               <option>Phone</option>
             </select>
 
-            <label>Attach File (optional)</label>
-            <input type="file" name="media" onChange={handleChange} />
+            <label>Attach Files (optional)</label>
+            <input
+              type="file"
+              name="media"
+              multiple // ✅ allow multiple files
+              onChange={handleChange}
+            />
+
+            {/* ✅ Preview thumbnails */}
+            {formData.media.length > 0 && (
+              <div className="preview">
+                {formData.media.map((file, idx) => (
+                  <img
+                    key={idx}
+                    src={URL.createObjectURL(file)}
+                    alt={`upload-${idx}`}
+                    style={{
+                      width: "100px",
+                      marginRight: "10px",
+                      marginTop: "10px",
+                      borderRadius: "6px",
+                    }}
+                  />
+                ))}
+              </div>
+            )}
 
             <button type="submit" className="submit-btn" disabled={loading}>
               {loading ? "Submitting..." : "Submit Ticket"}
