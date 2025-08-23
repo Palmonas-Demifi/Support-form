@@ -18,7 +18,7 @@ function SupportApp() {
   const [phoneError, setPhoneError] = useState("");
   const [orderIdError, setOrderIdError] = useState("");
   const [formError, setFormError] = useState("");
-
+const [submitted, setSubmitted] = useState(false); //
   // Sub-reason mapping
   const subReasons = {
     Return: [
@@ -120,8 +120,9 @@ function SupportApp() {
 
       console.log("Response:", result);
 
-      if (response.ok) {
-        alert("✅ Support request submitted successfully!");
+      if (response.status === 200) {
+         setSubmitted(true); // ✅ show Thank You page
+        // alert("✅ Support request submitted successfully!");
         e.target.reset();
         setFormData({
           orderRef: "#PM1570",
@@ -141,7 +142,33 @@ function SupportApp() {
       setLoading(false);
     }
   };
+if (submitted) {
+    // ✅ Thank You view
+    return (
+      <div className="page">
+        <header className="header">
+          <img src="/logo.webp" alt="Palmonas Logo" className="logo" />
+        </header>
 
+        <section className="banner">
+          <h1>Thank You!</h1>
+        </section>
+
+        <main className="form-container">
+          <div className="ticket-form thank-you-card">
+            <h2>Your support request has been submitted ✅</h2>
+            <p>
+              Our team will review your request and get back to you shortly via
+              your preferred contact method.
+            </p>
+            <button onClick={() => window.location.reload()} className="submit-btn">
+              Submit Another Request
+            </button>
+          </div>
+        </main>
+      </div>
+    );
+  }
   return (
     <div className="page">
       {/* Header */}

@@ -281,3 +281,35 @@ body {
   }
 
 }
+/* Thank You Page Styles */
+.thankyou-box {
+  background: var(--card-bg, #fff);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.thankyou-box h2 {
+  margin-bottom: 1rem;
+  color: var(--text-color, #333);
+}
+
+.thankyou-box p {
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  color: var(--text-muted, #666);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .thankyou-box {
+    background: #1f1f1f;
+    color: #eee;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+  }
+
+  .thankyou-box p {
+    color: #bbb;
+  }
+}
