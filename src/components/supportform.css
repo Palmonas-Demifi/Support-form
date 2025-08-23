@@ -1,7 +1,7 @@
 /* Reset default styles */
 * {
-    width: 100%;
-    max-width: 1600px;;
+  width: 100%;
+  max-width: 1600px;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -36,11 +36,9 @@ body {
 }
 
 .logo {
-height: 70px;
-        width: 200px;
-  
+  height: 70px;
+  width: 200px;
 }
-
 
 /* Ticket button */
 .ticket-btn {
@@ -109,6 +107,8 @@ height: 70px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 1rem;
+  background: #fff;
+  color: #000;
 }
 
 .ticket-form textarea {
@@ -161,7 +161,6 @@ height: 70px;
     padding: 0.75rem 1rem;
   }
 
-  
   .ticket-btn {
     padding: 0.4rem 0.7rem;
   }
@@ -180,6 +179,8 @@ height: 70px;
     border-radius: 8px;
   }
 }
+
+/* Loader Modal */
 .loader-modal {
   position: fixed;
   top: 0;
@@ -216,8 +217,67 @@ height: 70px;
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
 .error-text {
   color: red;
   font-size: 14px;
   margin-top: 4px;
+}
+
+/* ==================== DARK MODE ==================== */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #121212;
+    color: #e5e5e5;
+  }
+
+  .header {
+    background: #1e1e1e;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  }
+
+  .banner {
+    background-color: #000;
+  }
+
+  .banner h1 {
+    color: #fff;
+  }
+
+  .ticket-form {
+    background: rgba(34, 34, 34, 0.95);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+  }
+
+  .ticket-form input,
+  .ticket-form select,
+  .ticket-form textarea {
+    background: #1e1e1e;
+    color: #fff;
+    border: 1px solid #444;
+  }
+
+  .ticket-form input::placeholder,
+  .ticket-form textarea::placeholder {
+    color: #aaa;
+  }
+
+  .ticket-form .submit-btn {
+    background: #fff;
+    color: #000;
+  }
+
+  .ticket-form .submit-btn:hover {
+    background: #ddd;
+  }
+
+  .loader-text {
+    color: #e5e5e5;
+  }
+
+  /* ✅ Fix logo visibility in dark mode */
+  .logo {
+    filter: invert(1) brightness(2);
+  }
+
 }

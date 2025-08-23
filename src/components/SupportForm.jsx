@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import "./supportform.css";
 
 function SupportApp() {
@@ -10,16 +10,14 @@ function SupportApp() {
     issueType: "",
     subReason: "",
     problem: "",
-    contactMethod: ""
+    contactMethod: "",
+    media: null, // ✅ file attachment
   });
 
   const [loading, setLoading] = useState(false);
   const [phoneError, setPhoneError] = useState("");
   const [orderIdError, setOrderIdError] = useState("");
-
-  // 🔑 Refs for scrolling to error fields
-  const phoneRef = useRef(null);
-  const orderIdRef = useRef(null);
+  const [formError, setFormError] = useState("");
 
   // Sub-reason mapping
   const subReasons = {
@@ -52,10 +50,10 @@ function SupportApp() {
       setFormData((prev) => ({
         ...prev,
         issueType: value,
-        subReason: "" // reset subReason when issueType changes
+        subReason: "", // reset subReason when issueType changes
       }));
     } else if (files) {
-      setFormData({ ...formData, [name]: files[0] });
+      setFormData({ ...formData, [name]: files[0] }); // ✅ handle file input
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -69,56 +67,57 @@ function SupportApp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormError("");
 
-    // ✅ Phone validation
+    // final validation before submit
     if (formData.phone.length !== 10) {
       setPhoneError("Phone number must be exactly 10 digits.");
-      setOrderIdError("");
-      phoneRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
-      phoneRef.current.focus();
       return;
-    } else {
-      setPhoneError("");
     }
-
-    // ✅ Order ID validation
     if (
       !formData.orderRef.startsWith("#PM1570") ||
       formData.orderRef.length !== 13
     ) {
       setOrderIdError("Order ID must start with #PM1570 and end with 6 digits.");
-      setPhoneError("");
-      orderIdRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
-      orderIdRef.current.focus();
       return;
-    } else {
-      setOrderIdError("");
     }
 
     setLoading(true);
 
     try {
       const payload = new FormData();
-      for (const key in formData) {
-        if (formData[key] !== null && formData[key] !== "") {
-          payload.append(key, formData[key]);
-        }
+      payload.append("email", formData.email);
+      payload.append("contact_number", formData.phone);
+      payload.append("full_name", formData.firstName);
+      payload.append("issue_type", formData.issueType);
+      payload.append("sub_reason", formData.subReason);
+      payload.append("description", formData.problem);
+      payload.append("order_id", formData.orderRef);
+      payload.append("preferred_contact_method", formData.contactMethod);
+      if (formData.media) {
+        payload.append("media", formData.media);
       }
 
-      const response = await fetch(import.meta.env.VITE_GAS_WEB_APP_URL, {
-        method: "POST",
-        body: payload,
-        headers: { Accept: "application/json" },
-      });
+      const response = await fetch(
+        "https://utils.palmonas.com/api/submit-support-request",
+        {
+          method: "POST",
+          body: payload,
+        }
+      );
 
       let result;
-      try {
+      const contentType = response.headers.get("content-type");
+
+      if (contentType && contentType.includes("application/json")) {
         result = await response.json();
-      } catch {
+      } else {
         result = { message: await response.text() };
       }
 
-      if (result.ok || result.message) {
+      console.log("Response:", result);
+
+      if (response.ok) {
         alert("✅ Support request submitted successfully!");
         e.target.reset();
         setFormData({
@@ -129,14 +128,19 @@ function SupportApp() {
           issueType: "",
           subReason: "",
           problem: "",
-          contactMethod: ""
+          contactMethod: "",
+          media: null,
         });
       } else {
-        alert("❌ Something went wrong. Please try again.");
+        setFormError("❌ Error: " + (result.message || JSON.stringify(result)));
       }
-    } catch (error) {
-      alert("❌ Error submitting form: " + error.message);
-    } finally {
+    } 
+    
+    // catch (error) {
+    //   setFormError("❌ Error submitting form: " + error.message);
+    // } 
+    
+    finally {
       setLoading(false);
     }
   };
@@ -145,7 +149,7 @@ function SupportApp() {
     <div className="page">
       {/* Header */}
       <header className="header">
-        <a href="https://palmonas.com/"><img src="/logo.webp" alt="Palmonas Logo" className="logo" /></a>
+        <img src="/logo.webp" alt="Palmonas Logo" className="logo" />
       </header>
 
       <div className="main-content">
@@ -157,8 +161,16 @@ function SupportApp() {
         {/* Form */}
         <main className="form-container">
           <form onSubmit={handleSubmit} className="ticket-form">
+            {formError && <p className="error-text">{formError}</p>}
+
             <label>Registered Email ID *</label>
-            <input type="email" name="email" required onChange={handleChange} />
+            <input
+              type="email"
+              name="email"
+              required
+              value={formData.email}
+              onChange={handleChange}
+            />
 
             <label>Registered Contact Number *</label>
             <input
@@ -169,13 +181,16 @@ function SupportApp() {
               placeholder="Enter 10-digit number"
               value={formData.phone}
               onChange={handleChange}
-              ref={phoneRef}
-              className={phoneError ? "error-input" : ""}
             />
             {phoneError && <p className="error-text">{phoneError}</p>}
 
             <label>Full Name</label>
-            <input type="text" name="firstName" onChange={handleChange} />
+            <input
+              type="text"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+            />
 
             <label>Issue Type *</label>
             <select
@@ -220,12 +235,14 @@ function SupportApp() {
               name="problem"
               rows="5"
               required
+              value={formData.problem}
               onChange={handleChange}
             ></textarea>
 
             <label>
               Order ID{" "}
-              {formData.issueType !== "Brand Alliance (Collaboration, PR, Jobs)" && "*"}
+              {formData.issueType !==
+                "Brand Alliance (Collaboration, PR, Jobs)" && "*"}
             </label>
             <div className="order-id-field">
               <span className="prefix">#PM1570</span>
@@ -234,21 +251,29 @@ function SupportApp() {
                 name="orderRef"
                 placeholder="Enter last 6 digits"
                 maxLength="6"
-                required={formData.issueType !== "Brand Alliance (Collaboration, PR, Jobs)"}
+                required={
+                  formData.issueType !==
+                  "Brand Alliance (Collaboration, PR, Jobs)"
+                }
                 value={formData.orderRef.replace("#PM1570", "")}
                 onChange={handleOrderIdChange}
-                ref={orderIdRef}
-                className={orderIdError ? "error-input" : ""}
               />
             </div>
             {orderIdError && <p className="error-text">{orderIdError}</p>}
 
             <label>Preferred Contact Method</label>
-            <select name="contactMethod" onChange={handleChange}>
+            <select
+              name="contactMethod"
+              value={formData.contactMethod}
+              onChange={handleChange}
+            >
               <option value="">Choose...</option>
               <option>Email</option>
               <option>Phone</option>
             </select>
+
+            <label>Attach File (optional)</label>
+            <input type="file" name="media" onChange={handleChange} />
 
             <button type="submit" className="submit-btn" disabled={loading}>
               {loading ? "Submitting..." : "Submit Ticket"}
