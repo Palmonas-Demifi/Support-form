@@ -237,7 +237,7 @@ if (submitted) {
             {/* Dynamic Sub Reason */}
             {subReasons[formData.issueType] && (
               <>
-                <label>Sub Reason *</label>
+                {/* <label>Sub Reason *</label>
                 <select
                   name="subReason"
                   required
@@ -250,7 +250,13 @@ if (submitted) {
                       {reason}
                     </option>
                   ))}
-                </select>
+                </select> */}
+
+                <div>
+                  <p>
+                    For return and exchange related queries, please visit our <a href="https://returns.palmonas.com/login">Returns & Exchanges page.</a>
+                  </p>
+                </div>
               </>
             )}
 
