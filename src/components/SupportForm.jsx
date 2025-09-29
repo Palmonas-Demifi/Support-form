@@ -254,7 +254,7 @@ if (submitted) {
 
                 <div>
                   <p>
-                    For return and exchange related queries, please visit our <a href="https://returns.palmonas.com/login">Returns & Exchanges page.</a>
+                    To create a Return or Exchange request yourself, please visit our <a href="https://returns.palmonas.com/login">Return & Exchange page.</a>
                   </p>
                 </div>
               </>
