@@ -173,7 +173,8 @@ if (submitted) {
     <div className="page">
       {/* Header */}
       <header className="header">
-        <img src="/logo.webp" alt="Palmonas Logo" className="logo" />
+         <a href="https://palmonas.com/"><img src="/logo.webp" alt="Palmonas Logo" className="logo" /></a>
+      
       </header>
 
       <div className="main-content">
