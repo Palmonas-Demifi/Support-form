@@ -147,7 +147,7 @@ if (submitted) {
     return (
       <div className="page">
         <header className="header">
-          <img src="/logo.webp" alt="Palmonas Logo" className="logo" />
+         <a href="https://palmonas.com/"><img src="/logo.webp" alt="Palmonas Logo" className="logo" /></a>
         </header>
 
         <section className="banner">
