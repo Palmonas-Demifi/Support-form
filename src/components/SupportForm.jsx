@@ -18,6 +18,7 @@ function SupportApp() {
   const [phoneError, setPhoneError] = useState("");
   const [orderIdError, setOrderIdError] = useState("");
   const [formError, setFormError] = useState("");
+  const [message, setMessage] = useState("Our team will review your request and get back to you shortly via your preferred contact method.")
 const [submitted, setSubmitted] = useState(false); //
   // Sub-reason mapping
   const subReasons = {
@@ -121,7 +122,10 @@ const [submitted, setSubmitted] = useState(false); //
       console.log("Response:", result);
 
       if (response.status === 200) {
+        const api_message = result?.message
+         setMessage(api_message)
          setSubmitted(true); // ✅ show Thank You page
+         
         // alert("✅ Support request submitted successfully!");
         e.target.reset();
         setFormData({
@@ -157,10 +161,12 @@ if (submitted) {
         <main className="form-container">
           <div className="ticket-form thank-you-card">
             <h2>Your support request has been submitted ✅</h2>
-            <p>
-              Our team will review your request and get back to you shortly via
-              your preferred contact method.
-            </p>
+            <text style={{
+              whiteSpace:"break-spaces"
+            }} > 
+              {message}
+              
+            </text>
             <button onClick={() => window.location.reload()} className="submit-btn">
               Submit Another Request
             </button>
