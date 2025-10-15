@@ -103,7 +103,7 @@ const [submitted, setSubmitted] = useState(false); //
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/submit-support-request",
+        "https://utils.palmonas.com/api/submit-support-request",
         {
           method: "POST",
           body: payload,
